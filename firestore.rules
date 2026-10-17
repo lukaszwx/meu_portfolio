@@ -1,0 +1,40 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{banco}/documents {
+    function contaAutorizada() {
+      return request.auth != null
+        && exists(/databases/$(banco)/documents/administradores/$(request.auth.uid))
+        && get(/databases/$(banco)/documents/administradores/$(request.auth.uid)).data.ativo == true
+        && get(/databases/$(banco)/documents/administradores/$(request.auth.uid)).data.email == 'lukas.enginer7@gmail.com';
+    }
+
+    match /administradores/{uid} {
+      allow get: if request.auth != null && request.auth.uid == uid;
+      allow list, create, update, delete: if false;
+    }
+
+    match /site_editor/{documento} {
+      allow read: if documento == 'publicado' || contaAutorizada();
+      allow write: if contaAutorizada();
+    }
+
+    match /site_versoes/{versao} {
+      allow read, create, delete: if contaAutorizada();
+      allow update: if false;
+    }
+
+    match /site_auditoria/{evento} {
+      allow read, create: if contaAutorizada();
+      allow update, delete: if false;
+    }
+
+    match /mensagens/{mensagem} {
+      allow read, update, delete: if contaAutorizada();
+      allow create: if false;
+    }
+
+    match /{documento=**} {
+      allow read, write: if false;
+    }
+  }
+}

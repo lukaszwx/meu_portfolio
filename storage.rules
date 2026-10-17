@@ -1,0 +1,21 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function contaAutorizada() {
+      return request.auth != null
+        && firestore.exists(/databases/(default)/documents/administradores/$(request.auth.uid))
+        && firestore.get(/databases/(default)/documents/administradores/$(request.auth.uid)).data.ativo == true
+        && firestore.get(/databases/(default)/documents/administradores/$(request.auth.uid)).data.email == 'lukas.enginer7@gmail.com';
+    }
+
+    match /midias/{uid}/{arquivo} {
+      allow read: if true;
+      allow write: if contaAutorizada()
+        && request.resource.size < 8 * 1024 * 1024
+        && request.resource.contentType.matches('image/(jpeg|png|webp|avif|gif)');
+    }
+    match /{arquivo=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "source": "assets/raven-original.png",
+  "crop": [
+    387,
+    133,
+    727,
+    437
+  ],
+  "method": "máscara alfa de cor recortada diretamente dos pixels originais; sem redesenho"
+}
