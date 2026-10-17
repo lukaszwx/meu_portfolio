@@ -72,6 +72,21 @@ site para executar as verificações locais acima.
 Referências: https://firebase.google.com/docs/projects/api-keys e
 https://firebase.google.com/docs/storage/web/start.
 
+## Conferência de deploy na Vercel
+
+- Use o preset **Next.js**, a raiz deste repositório e o comando `npm run build`.
+  Remova overrides antigos que apontem a saída para `public` ou a raiz do código;
+  este projeto usa exportação estática para `out`.
+- A introdução em `/` carrega o portfólio pela rota explícita `/portfolio`.
+  A prévia administrativa usa a mesma rota. Se somente a introdução aparecer,
+  teste `/portfolio?intro=off` diretamente no domínio publicado.
+- Cadastre os seis valores Web do Firebase nas Environment Variables da Vercel
+  para o ambiente desejado e gere um novo build. Os arquivos `.env` locais não
+  são enviados ao GitHub. Nunca cadastre uma senha ou chave privada como
+  `NEXT_PUBLIC_*`.
+- Autorize o domínio usado no Firebase Authentication. Isso trata o login;
+  um 404 do documento do portfólio deve ser investigado nas rotas do deploy.
+
 ## O que o painel administra
 
 - textos de início, projetos, sobre, identidade da logo e contato em português e inglês;
